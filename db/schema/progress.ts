@@ -5,7 +5,7 @@ import {
   boolean,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { relations, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { users } from "./users";
 import { lessons } from "./lessons";
 
@@ -35,15 +35,3 @@ export const progress = pgTable(
     };
   },
 );
-
-// Sets up the relations: a progress record links to one user and one lesson.
-export const progressRelations = relations(progress, ({ one }) => ({
-  user: one(users, {
-    fields: [progress.userId],
-    references: [users.id],
-  }),
-  lesson: one(lessons, {
-    fields: [progress.lessonId],
-    references: [lessons.id],
-  }),
-}));

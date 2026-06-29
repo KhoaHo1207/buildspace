@@ -1,7 +1,5 @@
 import { pgTable, text, integer, timestamp } from "drizzle-orm/pg-core";
-import { relations, sql } from "drizzle-orm";
-import { lessons } from "./lessons";
-import { enrollments } from "./enrollments";
+import { sql } from "drizzle-orm";
 
 // Defines the "courses" table, storing course details like title,
 // description, thumbnail, duration, points, and timestamps.
@@ -17,9 +15,3 @@ export const courses = pgTable("courses", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
-
-// Sets up the relations: a course has many lessons and many enrollments.
-export const coursesRelations = relations(courses, ({ many }) => ({
-  lessons: many(lessons),
-  enrollments: many(enrollments),
-}));
