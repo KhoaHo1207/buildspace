@@ -23,6 +23,24 @@ function calculateDuration(videoCount: number): number {
   return videoCount * 15;
 }
 
+function determineDifficulty(title: string): "beginner" | "intermediate" | "advanced" {
+  const normalized = title.toLowerCase();
+
+  if (
+    /beginner|intro|basics|getting started|fundamentals|crash course/.test(
+      normalized,
+    )
+  ) {
+    return "beginner";
+  }
+
+  if (/advanced|expert|master|deep dive|production/.test(normalized)) {
+    return "advanced";
+  }
+
+  return "intermediate";
+}
+
 // Calculate course points based on difficulty and video count
 function calculatePoints(difficulty: string, videoCount: number): number {
   const basePoints =
@@ -134,7 +152,7 @@ async function seedCoursesFromPlaylists() {
 
     // Check if course already exists
     const existingCourse = await db.query.courses.findFirst({
-      where: (courses, { eq }) => eq(courses.title, title),
+      where: { title },
     });
 
     if (existingCourse) {
@@ -148,7 +166,6 @@ async function seedCoursesFromPlaylists() {
       .values({
         title: title,
         description: description,
-        difficulty: difficulty,
         duration: duration,
         points: points,
         thumbnail: thumbnail,

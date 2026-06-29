@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "tsx db/seed.ts",
+    "db:studio": "drizzle-kit studio",
+    "postinstall": "npm run db:generate",
+    "fetch:youtube": "tsx db/fetch-youtube-content.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.9",
