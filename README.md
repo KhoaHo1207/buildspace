@@ -52,16 +52,16 @@ buildspace/
 
 ```mermaid
 flowchart TD
-    A[Đăng nhập Clerk] --> B[/api/user/sync]
-    B --> C[Dashboard]
-    C --> D[Xem danh sách khóa /api/courses]
-    D --> E[Chi tiết khóa /api/courses/:id]
-    E --> F[Enroll /api/courses/:id/enroll]
-    F --> G[Học bài & hoàn thành /api/progress]
-    G --> H[Cập nhật XP, streak, achievements]
-    H --> I[Xem stats /api/user/stats]
-    H --> J[Leaderboard /api/leaderboard]
-    H --> K[Achievements /api/achievements]
+    A["Đăng nhập Clerk"] --> B["POST /api/user/sync"]
+    B --> C["Dashboard"]
+    C --> D["GET /api/courses"]
+    D --> E["GET /api/courses/courseId"]
+    E --> F["POST /api/courses/courseId/enroll"]
+    F --> G["POST /api/progress"]
+    G --> H["Cập nhật XP, streak, achievements"]
+    H --> I["GET /api/user/stats"]
+    H --> J["GET /api/leaderboard"]
+    H --> K["GET /api/achievements"]
 ```
 
 ### 1. Onboarding
