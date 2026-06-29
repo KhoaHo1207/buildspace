@@ -1,4 +1,4 @@
-import { google } from "googleapis";
+import { google, youtube_v3 } from "googleapis";
 import * as dotenv from "dotenv";
 import { db } from "@/db/drizzle";
 import { courses, lessons } from "@/db/schema";
@@ -60,23 +60,24 @@ async function fetchChannelPlaylists() {
 
   console.log("📺 Fetching playlists from channel...");
 
-  let allPlaylists: any[] = [];
-  let pageToken: string | undefined = undefined;
+  let allPlaylists: youtube_v3.Schema$Playlist[] = [];
+  let pageToken: string | undefined;
 
-  do {
+  while (true) {
     const response = await youtube.playlists.list({
       part: ["snippet", "contentDetails"],
       channelId: CHANNEL_ID,
       maxResults: BATCH_SIZE,
-      pageToken: pageToken,
+      pageToken,
     });
 
-    const playlists = response.data.items || [];
+    const playlists = response.data.items ?? [];
     allPlaylists = [...allPlaylists, ...playlists];
-    pageToken = response.data.nextPageToken || undefined;
+    pageToken = response.data.nextPageToken ?? undefined;
 
     console.log(`  Found ${playlists.length} playlists...`);
-  } while (pageToken);
+    if (!pageToken) break;
+  }
 
   console.log(`✅ Total playlists found: ${allPlaylists.length}\n`);
   return allPlaylists;
@@ -86,21 +87,22 @@ async function fetchChannelPlaylists() {
 async function fetchPlaylistVideos(playlistId: string, playlistTitle: string) {
   console.log(`  📹 Fetching videos for: ${playlistTitle}`);
 
-  let allVideos: any[] = [];
-  let pageToken: string | undefined = undefined;
+  let allVideos: youtube_v3.Schema$PlaylistItem[] = [];
+  let pageToken: string | undefined;
 
-  do {
+  while (true) {
     const response = await youtube.playlistItems.list({
       part: ["snippet", "contentDetails"],
       playlistId: playlistId,
       maxResults: BATCH_SIZE,
-      pageToken: pageToken,
+      pageToken,
     });
 
-    const videos = response.data.items || [];
+    const videos = response.data.items ?? [];
     allVideos = [...allVideos, ...videos];
-    pageToken = response.data.nextPageToken || undefined;
-  } while (pageToken);
+    pageToken = response.data.nextPageToken ?? undefined;
+    if (!pageToken) break;
+  }
 
   console.log(`    ✅ Found ${allVideos.length} videos`);
   return allVideos;

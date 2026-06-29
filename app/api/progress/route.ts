@@ -3,6 +3,7 @@ import { db } from "@/db/drizzle";
 import { users, progress, userAchievements, enrollments } from "@/db/schema";
 import { eq, and, count, sql } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
+import { isAchievementCriteria } from "@/types/achievement";
 
 // Function to check and award achievements
 async function checkAndAwardAchievements(userId: string) {
@@ -49,7 +50,9 @@ async function checkAndAwardAchievements(userId: string) {
     if (earnedIds.has(achievement.id)) continue;
 
     let shouldAward = false;
-    const criteria = achievement.criteria as any;
+    if (!isAchievementCriteria(achievement.criteria)) continue;
+
+    const criteria = achievement.criteria;
 
     switch (criteria.type) {
       case "lessons_completed":
